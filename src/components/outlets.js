@@ -8,7 +8,7 @@ function Outlet() {
 
   const onsubmit = (e) => {
     e.preventDefault()
-    axios.post('http://localhost:3003/outlets', formatFormData(values))
+    axios.post('https://mfuko-api.herokuapp.com/outlets', formatFormData(values))
       .then(result => {
         console.log(result)
       }).catch(error => {

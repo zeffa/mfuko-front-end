@@ -27,7 +27,7 @@ class Promotion extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3003/promotions', this.formatFormData(this.state))
+        axios.post('https://mfuko-api.herokuapp.com/promotions', this.formatFormData(this.state))
             .then(result => {
                 console.log(result)
                 if(result){
@@ -142,7 +142,7 @@ class Promotion extends React.Component {
     }
 
     fetchCategories = () => {
-        axios.get('http://localhost:3003/categories')
+        axios.get('https://mfuko-api.herokuapp.com/categories')
             .then(categories => {
                 this.setState({ categories: categories.data })
             })
@@ -150,7 +150,7 @@ class Promotion extends React.Component {
     }
 
     fetchSellers = () => {
-        axios.get('http://localhost:3003/outlets')
+        axios.get('https://mfuko-api.herokuapp.com/outlets')
         .then(sellers => {
             this.setState({sellers: sellers.data})
         })

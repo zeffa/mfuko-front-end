@@ -7,7 +7,7 @@ function Category() {
 
     const onsubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3003/categories', values)
+        axios.post('https://mfuko-api.herokuapp.com/categories', values)
             .then(result => {
                 console.log(result)
                 if(result){
