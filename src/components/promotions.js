@@ -2,6 +2,7 @@ import React from 'react';
 // import logo from './logo.svg';
 import axios from 'axios';
 import moment from 'moment'
+import storage from './Firebase'
 import '../App.css';
 
 class Promotion extends React.Component {
@@ -22,7 +23,9 @@ class Promotion extends React.Component {
         bundledOffer: '',
         savings: '',
         disclaimer: '',
-        filename: null
+        filename: null,
+        image: null,
+        progress: 0,
     }
 
     onSubmit = (e) => {
@@ -30,35 +33,85 @@ class Promotion extends React.Component {
         axios.post('https://mfuko-api.herokuapp.com/promotions', this.formatFormData(this.state))
             .then(result => {
                 console.log(result)
-                if(result){
-                    this.setState({success: true})
+                if (result) {
+                    this.setState({ success: true })
                 }
             }).catch(error => {
                 console.log(error)
             })
     }
 
-    formatFormData = (values) => {
-        const formData = new FormData()
-        formData.append('name', values.name)
-        formData.append("uniqueCode", values.uniqueCode)
-        formData.append("category", values.category)
-        formData.append("seller", values.seller)
-        formData.append("validBranch", values.validBranch)
-        formData.append("startDate", moment(values.startDate, 'YYYY-MM-DD').unix())
-        formData.append("endDate", moment(values.endDate, 'YYYY-MM-DD').unix())
-        formData.append("regularPrice", values.regularPrice)
-        formData.append("offerPrice", values.offerPrice)
-        formData.append("bundledOffer", values.bundledOffer)
-        formData.append("savings", values.savings)
-        formData.append("discalimer", values.disclaimer)
-        formData.append("file", values.filename)
+    formatData = (values, url) => {
+        return {
+            name: values.name,
+            uniqueCode: values.uniqueCode,
+            category: values.category,
+            seller: values.seller,
+            validBranch:values.validBranch,
+            startDate:moment(values.startDate, 'YYYY-MM-DD').unix(),
+            endDate: moment(values.endDate, 'YYYY-MM-DD').unix(),
+            regularPrice:values.regularPrice,
+            offerPrice: values.offerPrice,
+            bundledOffer:values.bundledOffer,
+            savings: values.savings,
+            discalimer:values.disclaimer,
+            imageUrl: url
+        }
+    }
 
-        return formData
+    // formatFormData = (values) => {
+    //     const formData = new FormData()
+    //     formData.append('name', values.name)
+    //     formData.append("uniqueCode", values.uniqueCode)
+    //     formData.append("category", values.category)
+    //     formData.append("seller", values.seller)
+    //     formData.append("validBranch", values.validBranch)
+    //     formData.append("startDate", moment(values.startDate, 'YYYY-MM-DD').unix())
+    //     formData.append("endDate", moment(values.endDate, 'YYYY-MM-DD').unix())
+    //     formData.append("regularPrice", values.regularPrice)
+    //     formData.append("offerPrice", values.offerPrice)
+    //     formData.append("bundledOffer", values.bundledOffer)
+    //     formData.append("savings", values.savings)
+    //     formData.append("discalimer", values.disclaimer)
+    //     formData.append("file", values.filename)
+
+    //     return formData
+    // }
+
+    handleUpload = (e) => {
+        e.preventDefault()
+        const { image } = this.state;
+        const uploadTask = storage.ref(`images/${image.name}`).put(image);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                this.setState({ ...this.state, progress });
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                storage
+                    .ref("images")
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        axios.post('https://mfuko-api.herokuapp.com/promotions', this.formatData(this.state, url))
+                            .then(result => {
+                                this.setState({ ...this.state, url, success: true });
+                            }).catch(error => {
+                                console.log(error)
+                                this.setState({ ...this.state, success: false });
+                            })
+                    });
+            })
     }
 
     handleFile = (e) => {
-        this.setState({ ...this.state, [e.target.name]: e.target.files[0] })
+        this.setState({ ...this.state, [e.target.name]: e.target.files[0], image: e.target.files[0] })
     }
 
     onChange = (e) => {
@@ -81,7 +134,7 @@ class Promotion extends React.Component {
         </option>
     );
 
-    render(){
+    render() {
 
         let categoryOptions = this.state.categories.map((data) =>
             <option
@@ -99,7 +152,7 @@ class Promotion extends React.Component {
             </option>
         );
 
-        const {onChange} = this;
+        const { onChange } = this;
         return (
             <div className='App'>
                 <header className='App-header'>
@@ -108,7 +161,7 @@ class Promotion extends React.Component {
                             this.state.success && <div style={{ marginBottom: '10px' }}>Created Successfully</div>
                         }
                         <div style={{ marginBottom: '10px' }}>Create Promotion</div>
-                        <form onSubmit={this.onSubmit}>
+                        <form onSubmit={this.handleUpload}>
                             <input value={this.state.name} onChange={onChange} type='text' name='name' placeholder='Promotion name' /><br />
                             <select value={this.state.category} onChange={onChange} name='category'>
                                 <option>Select Category</option>
@@ -136,7 +189,7 @@ class Promotion extends React.Component {
         );
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.fetchCategories();
         this.fetchSellers();
     }
@@ -151,10 +204,10 @@ class Promotion extends React.Component {
 
     fetchSellers = () => {
         axios.get('https://mfuko-api.herokuapp.com/outlets')
-        .then(sellers => {
-            this.setState({sellers: sellers.data})
-        })
-        .catch(error => {console.log(error)})
+            .then(sellers => {
+                this.setState({ sellers: sellers.data })
+            })
+            .catch(error => { console.log(error) })
     }
 }
 
