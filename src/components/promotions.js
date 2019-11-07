@@ -80,7 +80,7 @@ class Promotion extends React.Component {
 
     handleUpload = (e) => {
         e.preventDefault()
-        this.setState({...this.state, progress:0, success: fale})
+        this.setState({...this.state, progress:0, success: false})
         const { image } = this.state;
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
