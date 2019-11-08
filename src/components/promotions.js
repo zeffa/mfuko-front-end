@@ -163,24 +163,24 @@ class Promotion extends React.Component {
                         }
                         <div style={{ marginBottom: '10px' }}>Create Promotion</div>
                         <form onSubmit={this.handleUpload}>
-                            <input value={this.state.name} onChange={onChange} type='text' name='name' placeholder='Promotion name' /><br />
-                            <select value={this.state.category} onChange={onChange} name='category'>
+                            <input value={this.state.name} onChange={onChange} type='text' name='name' required placeholder='Promotion name' /><br />
+                            <select value={this.state.category} onChange={onChange} name='category' required>
                                 <option>Select Category</option>
                                 {categoryOptions}
                             </select><br />
-                            <select value={this.state.seller} onChange={onChange} name='seller'>
+                            <select value={this.state.seller} onChange={onChange} name='seller' required>
                                 <option>Select Outlet</option>
                                 {sellerOptions}
                             </select><br />
                             <input value={this.state.uniqueCode} onChange={onChange} type='text' name='uniqueCode' placeholder='Unique Code' /><br />
-                            <input value={this.state.validBranch} onChange={onChange} type='text' name='validBranch' placeholder='Valid Branch' /><br />
-                            <input value={this.state.startDate} onChange={onChange} type='date' name='startDate' placeholder='Start Date' /><br />
-                            <input value={this.state.endDate} onChange={onChange} type='date' name='endDate' placeholder='End Date' /><br />
-                            <input value={this.state.regularPrice} onChange={onChange} type='number' name='regularPrice' placeholder='Regular Price' /><br />
+                            <input value={this.state.validBranch} onChange={onChange} type='text' name='validBranch' required placeholder='Valid Branch' /><br />
+                            <input value={this.state.startDate} onChange={onChange} type='date' name='startDate' required placeholder='Start Date' /><br />
+                            <input value={this.state.endDate} onChange={onChange} type='date' name='endDate' required placeholder='End Date' /><br />
+                            <input value={this.state.regularPrice} onChange={onChange} type='number' name='regularPrice' required placeholder='Regular Price' /><br />
                             <input value={this.state.offerPrice} onChange={onChange} type='text' name='offerPrice' placeholder='Offer Price' /><br />
                             <input value={this.state.bundledOffer} onChange={onChange} type='text' name='bundledOffer' placeholder='Bundled Offer' /><br />
                             <input value={this.state.savings} onChange={onChange} type='text' name='savings' placeholder='Savings' /><br />
-                            <input value={this.state.disclaimer} onChange={onChange} type='text' name='disclaimer' placeholder='Disclaimer' /><br />
+                            <input value={this.state.disclaimer} onChange={onChange} type='text' name='disclaimer' required placeholder='Disclaimer' /><br />
                             <input onChange={this.handleFile} accept='image/*' type='file' name='filename' /><br />
                             <input type='submit' value='Create Promotion' />
                         </form>
