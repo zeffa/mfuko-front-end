@@ -54,7 +54,7 @@ class Promotion extends React.Component {
             offerPrice: values.offerPrice,
             bundledOffer:values.bundledOffer,
             savings: values.savings,
-            discalimer:values.disclaimer,
+            disclaimer:values.disclaimer,
             imageUrl: url
         }
     }
