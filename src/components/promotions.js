@@ -47,14 +47,14 @@ class Promotion extends React.Component {
             uniqueCode: values.uniqueCode,
             category: values.category,
             seller: values.seller,
-            validBranch:values.validBranch,
-            startDate:moment(values.startDate, 'YYYY-MM-DD').unix(),
+            validBranch: values.validBranch,
+            startDate: moment(values.startDate, 'YYYY-MM-DD').unix(),
             endDate: moment(values.endDate, 'YYYY-MM-DD').unix(),
-            regularPrice:values.regularPrice,
+            regularPrice: values.regularPrice,
             offerPrice: values.offerPrice,
-            bundledOffer:values.bundledOffer,
+            bundledOffer: values.bundledOffer,
             savings: values.savings,
-            disclaimer:values.disclaimer,
+            disclaimer: values.disclaimer,
             imageUrl: url
         }
     }
@@ -80,7 +80,7 @@ class Promotion extends React.Component {
 
     handleUpload = (e) => {
         e.preventDefault()
-        this.setState({...this.state, progress:0, success: false})
+        this.setState({ ...this.state, progress: 0, success: false })
         const { image } = this.state;
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
@@ -102,7 +102,26 @@ class Promotion extends React.Component {
                     .then(url => {
                         axios.post('https://mfuko-api.herokuapp.com/promotions', this.formatData(this.state, url))
                             .then(result => {
-                                this.setState({ ...this.state, url, success: true });
+                                this.setState(
+                                    {
+                                        ...this.state,
+                                        name: '',
+                                        uniqueCode: '',
+                                        validBranch: '',
+                                        startDate: '',
+                                        endDate: '',
+                                        regularPrice: '',
+                                        offerPrice: '',
+                                        bundledOffer: '',
+                                        savings: '',
+                                        disclaimer: '',
+                                        filename: null,
+                                        image: null,
+                                        progress: 0,
+                                        url,
+                                        success: true
+                                    }
+                                );
                             }).catch(error => {
                                 console.log(error)
                                 this.setState({ ...this.state, success: false });
